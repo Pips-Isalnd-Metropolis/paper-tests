@@ -1,23 +1,31 @@
-import '@/styles/globals.css'
+import { Mumbai } from "@thirdweb-dev/chains";
+import {
+  ThirdwebProvider,
+  embeddedWallet,
+  smartWallet,
+} from "@thirdweb-dev/react";
+import "../styles/globals.css";
 
-import { PaperEmbeddedWalletSdk } from '@paperxyz/embedded-wallet-service-sdk'
+// This is the chain your dApp will work on.
+// Change this to the chain your app is built for.
+// You can also import additional chains from `@thirdweb-dev/chains` and pass them directly.
+export const activeChain = Mumbai;
 
-// initialize the SDK
-// const sdk = new PaperEmbeddedWalletSdk({
-//   clientId: process.env.NEXT_PUBLIC_PAPER_CLIENT_ID,
-//   chain: 'Mumbai',
-// })
-
-// log the user in
-// const user = await sdk.auth.loginWithPaperModal()
-
-// // Execute a transaction without the user wallet needing gas money
-// const { transactionHash } = await user.wallet.gasless.callContract({
-//   methodInterface: 'function mintFreeNft(uint256 quantity) external',
-//   methodArgs: [1],
-//   contractAddress: '0x...',
-// })
+export const smartWalletConfig = smartWallet(embeddedWallet(), {
+  // you'd have to update this to your own factory address when you go live
+  factoryAddress: "0x9C1E8af2EebbabBa69ed56640FBB2DC353129635",
+  gasless: true,
+});
 
 export default function App({ Component, pageProps }) {
-  return <Component {...pageProps} />
+  return (
+    <ThirdwebProvider
+      // make sure you enable the factory address above as an allowed bundler for the client ID below
+      clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
+      activeChain={activeChain}
+      supportedWallets={[smartWalletConfig]}
+    >
+      <Component {...pageProps} />
+    </ThirdwebProvider>
+  );
 }
