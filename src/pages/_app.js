@@ -20,6 +20,7 @@ export const smartWalletConfig = smartWallet(embeddedWallet(), {
 export default function App({ Component, pageProps }) {
   return (
     <ThirdwebProvider
+      // make sure you enable the factory address above as an allowed bundler for the client ID below
       clientId={process.env.NEXT_PUBLIC_THIRDWEB_CLIENT_ID}
       activeChain={activeChain}
       supportedWallets={[smartWalletConfig]}
